@@ -1,0 +1,13 @@
+query orgRepos($organization: String!, $endCursor:String) {
+  organization(login: $organization) {
+    repositories(first: 100, after: $endCursor, orderBy: {field:NAME, direction:ASC}) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      nodes {
+        name
+      }
+    }
+  }
+}

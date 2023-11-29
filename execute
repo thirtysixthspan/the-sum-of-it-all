@@ -1,0 +1,25 @@
+#!/bin/bash
+# set -x
+
+gh=$(which gh);
+jq=$(which jq);
+
+query=$1.gql;
+config=$1.config;
+output=$1.output;
+context=context.json
+
+jqe=$(jq -r .jqe $config);
+jqs=$(jq -r .jqs $config);
+jqc=$(jq -r .jqc $config);
+
+params=$(jq -r 'to_entries|map("-f \(.key)=\(.value|tostring)")|.[]' $context | tr '\n' ' ');
+
+echo $gh $query;
+echo "jq extraction: $jqe"
+echo "jq selection: $jqs"
+echo "jq collation: $jqc"
+echo "query params: $params"
+
+eval "$gh api graphql --paginate -F query=@$query $params | jq -r '$jqe | $jqs | $jqc' | jq -s . | tee $output";
+

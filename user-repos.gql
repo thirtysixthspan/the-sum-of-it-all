@@ -1,0 +1,12 @@
+query userRepos($login: String!, $endCursor:String) {
+  user(login: $login) {
+    repositoriesContributedTo(first: 100, after: $endCursor, contributionTypes: [COMMIT, PULL_REQUEST]) {
+      nodes {
+        name
+        owner {
+          login
+        }
+      }
+    }
+  }
+}
